@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
+import Amplitude from './components/Amplitude';
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -16,28 +16,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       {/* App Router에서는 <head>를 직접 넣지 않는 게 정석입니다 */}
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {/* 1) 라이브러리 로드: beforeInteractive로 최우선 로드 */}
-        <Script
-          src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"
-          strategy="beforeInteractive"
-        />
-        <Script
-          src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"
-          strategy="beforeInteractive"
-        />
-
-        {/* 2) 초기화: 브라우저 인터랙션 이후 실행 (window 안전) */}
-        <Script id="amplitude-init" strategy="afterInteractive">
-          {`
-            window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
-            window.amplitude.init('${process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}', {
-              autocapture: { elementInteractions: true }
-            });
-          `}
-        </Script>
-
+        <Amplitude/>
         {children}
       </body>
     </html>
   );
 }
+
+  // {/* 1) 라이브러리 로드: beforeInteractive로 최우선 로드 */}
+  //       <Script
+  //         src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"
+  //         strategy="beforeInteractive"
+  //       />
+  //       <Script
+  //         src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"
+  //         strategy="beforeInteractive"
+  //       />
+
+  //       {/* 2) 초기화: 브라우저 인터랙션 이후 실행 (window 안전) */}
+  //       <Script id="amplitude-init" strategy="afterInteractive">
+  //         {`
+  //           window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
+  //           window.amplitude.init('${process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY}', {
+  //             autocapture: { elementInteractions: true }
+  //           });
+  //         `}
+  //       </Script>
